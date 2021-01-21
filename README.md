@@ -6,7 +6,7 @@ Users must have R downloaded on the computer they are running the application fr
 The application can be found at **URL**
 
 ### Inputs
-The application takes a .xlsx with tabs for **Summary Table, ...**. When the user browses to their raw Costech data the Excel file is imported. The user also must provide inputs for the following parameters in the model;
+The application takes a .xlsx with Result Table, Chromatogram Data, Chromatogram Graph, and Summary Table tabs.  When the user browses to their raw Costech data the Summary Table of the Excel file is imported. The user also must provide inputs for the following parameters in the model;
   + Detection Limit Factor: To estimate 'below detection limit', what is the factor to divide the low calibration standard by? Default is 2.5.
   + Total Nitrogen Uncertainty Factor: Estimate for the uncertainty of total nitrogen %. Provide as decimal, default is 0.1.
   + Total Carbon Uncertainty Factor: Estimate for the uncertainty of total Carbon %. Provide as decimal, default is 0.05.
