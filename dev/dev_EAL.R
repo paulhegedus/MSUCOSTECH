@@ -5,6 +5,7 @@
 ##------------------------------------------------------------------------------------
 library(magrittr)
 library(readxl)
+library(openxlsx)
 source("/Users/PaulBriggs/Box/Hegedus/Projects/EAL/MSUCOSTECH/dev/dev_EAL_fxns.R")
 ##------------------------------------------------------------------------------------
 # 1 set parameters

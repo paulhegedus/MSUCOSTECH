@@ -23,9 +23,10 @@ Uncertainty Factor: Estimate for the uncertainty of total Carbon %.
 Provide as decimal, default is 0.05. + Nitrogen Consensus Value:
 Consensus value for nitrogen derived from prior Costech standards,
 divided from the measured standards to evaluate new measurements with
-prior Costech data. + Carbon Consensus Value: Consensus value for carbon
-derived from prior Costech standards, divided from the measured
-standards to evaluate new measurements with prior Costech data.
+prior Costech data. Default is 0.15. + Carbon Consensus Value: Consensus
+value for carbon derived from prior Costech standards, divided from the
+measured standards to evaluate new measurements with prior Costech data.
+Default is 2.
 
 The output Excel spreadsheet has a sheet called User Inputs that
 contains columns with the name of each input above, the abbreviation
@@ -68,7 +69,7 @@ tables that compose the exported report.
 
 <div class="figure" style="text-align: center">
 
-<img src="/Users/PaulBriggs/Box/Hegedus/Projects/EAL/MSUCOSTECH/www/msucostech_workflow.png" alt="Workflow for the MSU EAL Costech automated data report. Green shapes in the image below characterize inputs, with ovals representing inputs that are also used in the Shiny application. Functions used in the application are shown in blue and temporary data is represented by yellow shapes. Sheets in the exported Excel report are shown in coral. All of the inputs are included in the User Inputs table of the output." width="75%" />
+<img src="/Users/PaulBriggs/Box/Hegedus/Projects/EAL/MSUCOSTECH/MSUCOSTECH_Reports/www/msucostech_workflow.png" alt="Workflow for the MSU EAL Costech automated data report. Green shapes in the image below characterize inputs, with ovals representing inputs that are also used in the Shiny application. Functions used in the application are shown in blue and temporary data is represented by yellow shapes. Sheets in the exported Excel report are shown in coral. All of the inputs are included in the User Inputs table of the output." width="75%" />
 
 <p class="caption">
 
@@ -98,8 +99,8 @@ using the calibration values and the user specified uncertainty factors.
 Finally, the data is packaged into an Excel file and exported.
 
 The scripts for the application and the code for creating the report are
-contained in the MSUCOSTECH\_App folder of this repository. The
-**MSUCOSTECH\_App.app** contains the application deployment and
+contained in the MSUCOSTECH\_Reports folder of this repository. The
+**MSUCOSTECH\_Reports\_App.R** contains the application deployment and
 **MSUCOSTECH\_fxns.R** contains the supporting code. The following
 sections describe the arguments, process, and output for each function;
 + importRawDat(): Requires a path to the Excel file exported from the
