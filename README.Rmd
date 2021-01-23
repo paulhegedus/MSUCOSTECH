@@ -4,7 +4,7 @@ output: github_document
 # msucostech
 Montana State University Environmental Laboratory Shiny application for creating automated data reports from raw Costech ECS 4010 data.
 
-The application can be found at **URL**. Code can be found at https://github.com/paulhegedus/msucostech. An example of the workflow in traditional R formatting can be found in the 'dev' folder within the repository. These are updated as of 2021/01/22. 
+The application can be found at https://paulhegedus.shinyapps.io/msucostech_report_app/. Code can be found at https://github.com/paulhegedus/msucostech. An example of the workflow in traditional R formatting can be found in the 'dev' folder within the repository. These are updated as of 2021/01/22. 
 
 ### Inputs
 The application takes a .xlsx or .xls with the only requirement of having a sheet named 'Summary Table' within it. This table is assumed exported from the Costech ECS 4010 at MSU in a specified data format, however it is up to the use to be specifiying their raw data or another table that includes a 'Summary Table' tab. If the 'Summary Table' sheet of the provided Excel sheet is not formatted as exported (i.e. modified in any way) from the MSU EAL Costech, there is no guarantee that this application will work correctly. However, a good verification of the application is if the user is providing an Excel spreadsheet that is a product of previous MSU EAL data reports (as of 2021/01/22) which include the unmanipulated raw data in a 'Summary Table' sheet, from which the applications results can be compared to. When the user browses to their Excel spreadsheet with a 'Summary Table', only the 'Summary Table' sheet is imported. 

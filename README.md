@@ -4,10 +4,11 @@
 Montana State University Environmental Laboratory Shiny application for
 creating automated data reports from raw Costech ECS 4010 data.
 
-The application can be found at **URL**. Code can be found at
-<https://github.com/paulhegedus/msucostech>. An example of the workflow
-in traditional R formatting can be found in the ‘dev’ folder within the
-repository. These are updated as of 2021/01/22.
+The application can be found at
+<https://paulhegedus.shinyapps.io/msucostech_report_app/>. Code can be
+found at <https://github.com/paulhegedus/msucostech>. An example of the
+workflow in traditional R formatting can be found in the ‘dev’ folder
+within the repository. These are updated as of 2021/01/22.
 
 ### Inputs
 
