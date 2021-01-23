@@ -28,21 +28,25 @@ Table’ sheet is imported.
 
 The user also must provide inputs for the following parameters to
 execute the workflow. If the user neglects to set any values, the
-defaults will be used; + **Nitrogen Detection Limit Factor:** Factor to
-divide the low calibration range for nitrogen by to estimate ‘below
-detection limit’. Default is 2. + **Carbon Detection Limit Factor:**
-Factor to divide the low calibration range for carbon by to estimate
-‘below detection limit’. Default is 10. + **Total Nitrogen Uncertainty
-Factor:** Estimate for the uncertainty of total nitrogen %. Provide as
-decimal, default is 0.1. + **Total Carbon Uncertainty Factor:** Estimate
-for the uncertainty of total Carbon %. Provide as decimal, default is
-0.05. + **Nitrogen Consensus Factor:** Consensus value for nitrogen
-derived from prior Costech standards, divided from the measured
-‘Standards’ to evaluate new measurements with prior Costech data.
-Default is 0.14. + **Carbon Consensus Factor:** Consensus value for
-carbon derived from prior Costech standards, divided from the measured
-‘Standards’ to evaluate new measurements with prior Costech data.
-Default is 1.67.
+defaults will be used;
+
+  - **Nitrogen Detection Limit Factor:** Factor to divide the low
+    calibration range for nitrogen by to estimate ‘below detection
+    limit’. Default is 2.
+  - **Carbon Detection Limit Factor:** Factor to divide the low
+    calibration range for carbon by to estimate ‘below detection limit’.
+    Default is 10.
+  - **Total Nitrogen Uncertainty Factor:** Estimate for the uncertainty
+    of total nitrogen %. Provide as decimal, default is 0.1.
+  - **Total Carbon Uncertainty Factor:** Estimate for the uncertainty of
+    total Carbon %. Provide as decimal, default is 0.05.
+  - **Nitrogen Consensus Factor:** Consensus value for nitrogen derived
+    from prior Costech standards, divided from the measured ‘Standards’
+    to evaluate new measurements with prior Costech data. Default is
+    0.14.
+  - **Carbon Consensus Factor:** Consensus value for carbon derived from
+    prior Costech standards, divided from the measured ‘Standards’ to
+    evaluate new measurements with prior Costech data. Default is 1.67.
 
 The output Excel spreadsheet has a sheet called ‘User Inputs’ that
 contains the entries for the parameters the user provided. If the user
@@ -99,8 +103,8 @@ The ‘msucostech\_report\_app.R’ contains the application deployment and
 following sections describe the arguments, process, and output for each
 function;
 
-  - **genUserInputsTab():** Arguments are the parameters provided by the
-    user for the report generation. These include all the parameters
+  - **.genUserInputsTab():** Arguments are the parameters provided by
+    the user for the report generation. These include all the parameters
     defined in the Inputs section above. Argument names are
     ‘raw\_dat\_filename’, ‘raw\_dat\_folder\_path’,
     ‘det\_limit\_fctr’, ‘N\_uncertainty\_fctr’,
@@ -111,7 +115,9 @@ function;
     a column called ‘Abbreviation’ with the input abbreviation used in
     the code, and a column called ‘Entry’ with either the user specified
     value or the default value. This table is exported as the ‘User
-    Inputs’ sheet in the Excel report.
+    Inputs’ sheet in the Excel report. The prefix (“.”) indicates that
+    this function may not be used in the application code. However, the
+    same workflow will apply.
   - **importRawDat():** Arguments are ‘raw\_dat\_filename’ character,
     which is the file name for the raw data from the Costech ECS 4010,
     and an optional ‘raw\_dat\_folder\_path’ character which is a path
@@ -143,92 +149,91 @@ function;
     possibly in the ‘SampleID’s column for calibration samples called
     ’cal\_identifiers’. This is a baked in set of identifiers that
     include ‘Acetanilide’, ‘Acet’, ‘Acetan’, ‘Acetanalide’, ‘analide’,
-    ‘atropine’, ‘atro’ for common calibration standards such as
-    Acetanilide or Atropine. The third and fourth arguments are the user
-    specified detection limit factor for each element
+    ‘atropine’, ‘atro’, or ‘atrpn’ for common calibration standards
+    such as Acetanilide or Atropine. The third and fourth arguments are
+    the user specified detection limit factor for each element
     (‘N\_det\_limit\_fctr’ and ‘C\_det\_limit\_fctr’), and the final
     two arguments are the nitrogen and carbon consensus factors,
     ‘N\_consensus\_fctr’ and ‘C\_consensus\_fctr’, which are used to
     calculate the consensus value of the standard samples for each
-    element.
-
-This function subsets calibration samples from the raw data. Currently
-this process is performed via pattern matching expected codes used for
-calibration samples using the ‘cal\_identifiers’ matched in the
-‘SampleID’ column. This is not case sensitive and requires a mild
-standardization of ‘SampleID’s to be identifiable. An empty ’Calibration
-Range’ table is generated with a column labeled ‘CalibrationRange’ with
-‘N’ and ‘C’ to deliminate nitrogen and carbon limits and filled in
-with the following calculations. The low and high calibration ranges
-(‘LowCalibration’ and ‘HighCalibration’ columns) for each element are
-derived by multiplying the minimum and maximum calibration sample
-amounts (‘Sample Amount’ in the ‘Summary Table’) by 0.1036 for nitrogen
-and 0.7109 for carbon. These values are baked into the application and
-used because the calibration standard weights are measured. This means
-there is uncertainty in the measured weights by the Costech, and so the
-weight of the samples measured prior to Costech analysis are used
-multiplied by 10.36% and 71.09% for nitrogen and carbon, respectively,
-as a more accurate measure of the weight of nitrogen and carbon in the
-calibration samples. The ‘DetectionLimit’ column is calculated by
-dividing the low calibration range by the user specified detection limit
-factor for each element (‘N\_det\_limit\_fctr’ or ‘C\_det\_limit\_fctr’,
-respectively). This may be a temporary process until a data-driven
-approach is developed.
-
-The mean and standard deviation are calculated from the weight
-percentages in the ‘Standards’ table for nitrogen and carbon, and are
-placed in the appropriate rows of the ‘Calibration Range’ table in
-columns labeled ‘StandardMean’ and ‘StandardSD’, respectively. The
-coefficient of variation for both elements are then calculated as the
-standard deviation divided by the mean and added as a column labeled
-‘StandardCV’. A consensus value is then derived in the
-‘ConsensusValue’ column by dividing the mean weight percent of the
-Standard D samples for each element (‘StandardMean’) by the user
-specified consensus factor for each element (‘N\_consensus\_fctr’,
-‘C\_consensus\_fctr’). After the ‘Calibration Range’ table has been
-completed, it is returned to the user. This is exported in the Excel
-spreadsheet report in the ‘Calibration Range’ sheet. +
-**genResultsTab():** The arguments for this function are the
-‘SummaryTable’ data frame which is the raw Costech data, the
-‘Calibration Range’ data frame created from the genCalRangeTab()
-function as ‘CalibrationRange’, the ‘std\_d\_identifiers’ and
-‘cal\_identifiers’ character vectors specified as arguments in the
-functions above, and the uncertainty factors for nitrogen and carbon
-(‘N\_uncertainty\_fctr’ and ‘C\_uncertainty\_fctr’, respectively).
-
-This function uses the identifiers for Standard D and calibration
-samples to take all rows that aren’t these or a bypass, identified by
-‘Bypass’ or ‘By pass’ in the SampleID. The ‘SampleID’, weight
-(‘x\_Weight\_mg’, where ‘x’ is ‘C’ or ‘N’) and weight percents
-(‘x\_Weight\_pct’, where ‘x’ is ‘C’ or ‘N’) are the columns taken from
-the raw data during the subsetting process. The weight percent columns
-are renamed to ‘%TN’ and ‘%TC’, respectively for each element. The
-nitrogen and carbon percent uncertainty are calculated and added to the
-table by multiplying the weight percent by the nitrogen or carbon
-uncertainty factor that was specified by the user. These are included as
-columns named ‘%TN uncertainty’ and ‘%TC uncertainty’.
-
-Using the weights in mg for each element, the flags (‘%TN flag’ and ‘%TC
-flag’) are derived by determining if the weight falls; first below the
-detection limit, and then within the bounds of the quantifiable limits.
-Observations are labeled ‘bdl’ if the measurement falls below the
-detection limit, ‘bql’ if the measurement falls below the lower
-quantifiable limit, ‘aql’ if the measurement exceeds the upper
-quantifiable limit, or ‘ok’ if it falls within the quantifiable limits.
-The detection and quantifiable detection limits for each element are
-taken from the ‘CalibrationRange’ table.
-
-The weight columns are removed from the ‘Results’ table, the columns are
-organized by element, and the ‘Results’ table is returned to the user.
-This table is exported in the ‘Results’ sheet of the Excel report. +
-**.exportReport():** This function takes a list of outputs, labeled
-‘Results’, ‘CalibrationRange’, ‘Standards’, ‘SummaryTable’, and
-‘UserInputs’ from the functions above, in any order. This function
-then puts them into an Excel spreasheet that is exported to the user’s
-file system folder with sheets labeled as ‘Results’, ‘Calibration
-Range’, ‘Standards’, ‘Summary Table’, and ‘User Inputs’. The exported
-filename is a concatenation of the raw filename with ‘*REPORT*’ plus the
-date and time the report was generated.
+    element. This function subsets calibration samples from the raw
+    data. Currently this process is performed via pattern matching
+    expected codes used for calibration samples using the
+    ‘cal\_identifiers’ matched in the ‘SampleID’ column. This is not
+    case sensitive and requires a mild standardization of ‘SampleID’s to
+    be identifiable. An empty ’Calibration Range’ table is generated
+    with a column labeled ‘CalibrationRange’ with ‘N’ and ‘C’ to
+    deliminate nitrogen and carbon limits and filled in with the
+    following calculations. The low and high calibration ranges
+    (‘LowCalibration’ and ‘HighCalibration’ columns) for each element
+    are derived by multiplying the minimum and maximum calibration
+    sample amounts (‘Sample Amount’ in the ‘Summary Table’) by 0.1036
+    for nitrogen and 0.7109 for carbon. These values are baked into the
+    application and used because the calibration standard weights are
+    measured. This means there is uncertainty in the measured weights by
+    the Costech, and so the weight of the samples measured prior to
+    Costech analysis are used multiplied by 10.36% and 71.09% for
+    nitrogen and carbon, respectively, as a more accurate measure of the
+    weight of nitrogen and carbon in the calibration samples. The
+    ‘DetectionLimit’ column is calculated by dividing the low
+    calibration range by the user specified detection limit factor for
+    each element (‘N\_det\_limit\_fctr’ or ‘C\_det\_limit\_fctr’,
+    respectively). This may be a temporary process until a data-driven
+    approach is developed. The mean and standard deviation are
+    calculated from the weight percentages in the ‘Standards’ table for
+    nitrogen and carbon, and are placed in the appropriate rows of the
+    ‘Calibration Range’ table in columns labeled ‘StandardMean’ and
+    ‘StandardSD’, respectively. The coefficient of variation for both
+    elements are then calculated as the standard deviation divided by
+    the mean and added as a column labeled ‘StandardCV’. A consensus
+    value is then derived in the ‘ConsensusValue’ column by dividing the
+    mean weight percent of the Standard D samples for each element
+    (‘StandardMean’) by the user specified consensus factor for each
+    element (‘N\_consensus\_fctr’, ‘C\_consensus\_fctr’). After the
+    ‘Calibration Range’ table has been completed, it is returned to
+    the user. This is exported in the Excel spreadsheet report in the
+    ‘Calibration Range’ sheet.
+  - **genResultsTab():** The arguments for this function are the
+    ‘SummaryTable’ data frame which is the raw Costech data, the
+    ‘Calibration Range’ data frame created from the genCalRangeTab()
+    function as ‘CalibrationRange’, the ‘std\_d\_identifiers’ and
+    ‘cal\_identifiers’ character vectors specified as arguments in the
+    functions above, and the uncertainty factors for nitrogen and carbon
+    (‘N\_uncertainty\_fctr’ and ‘C\_uncertainty\_fctr’, respectively).
+    This function uses the identifiers for Standard D and calibration
+    samples to take all rows that aren’t these or a bypass, identified
+    by ‘Bypass’ or ‘By pass’ in the SampleID. The ‘SampleID’, weight
+    (‘x\_Weight\_mg’, where ‘x’ is ‘C’ or ‘N’) and weight percents
+    (‘x\_Weight\_pct’, where ‘x’ is ‘C’ or ‘N’) are the columns taken
+    from the raw data during the subsetting process. The weight percent
+    columns are renamed to ‘%TN’ and ‘%TC’, respectively for each
+    element. The nitrogen and carbon percent uncertainty are calculated
+    and added to the table by multiplying the weight percent by the
+    nitrogen or carbon uncertainty factor that was specified by the
+    user. These are included as columns named ‘%TN uncertainty’ and ‘%TC
+    uncertainty’. Using the weights in mg for each element, the flags
+    (‘%TN flag’ and ‘%TC flag’) are derived by determining if the
+    weight falls; first below the detection limit, and then within the
+    bounds of the quantifiable limits. Observations are labeled ‘bdl’ if
+    the measurement falls below the detection limit, ‘bql’ if the
+    measurement falls below the lower quantifiable limit, ‘aql’ if the
+    measurement exceeds the upper quantifiable limit, or ‘ok’ if it
+    falls within the quantifiable limits. The detection and quantifiable
+    detection limits for each element are taken from the
+    ‘CalibrationRange’ table. The weight columns are removed from the
+    ‘Results’ table, the columns are organized by element, and the
+    ‘Results’ table is returned to the user. This table is exported in
+    the ‘Results’ sheet of the Excel report.
+  - **.exportReport():** This function takes a list of outputs, labeled
+    ‘Results’, ‘CalibrationRange’, ‘Standards’, ‘SummaryTable’, and
+    ‘UserInputs’ from the functions above, in any order. This function
+    then puts them into an Excel spreasheet that is exported to the
+    user’s file system folder with sheets labeled as ‘Results’,
+    ‘Calibration Range’, ‘Standards’, ‘Summary Table’, and ‘User
+    Inputs’. The exported filename is a concatenation of the raw
+    filename with ‘*REPORT*’ plus the date and time the report was
+    generated. The prefix (“.”) indicates that this function may not be
+    used in the application code.
 
 ### Outputs
 

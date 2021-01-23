@@ -22,7 +22,7 @@ input$raw_dat_filename <-  "PF_JG_210112_Costech.xlsx" # "PF_JG_Costech-20201016
 ##------------------------------------------------------------------------------------
 ## 2 make output (not needed in shiny? is reactiveValues data) - updates reactively
 output <- list()
-output$UserInputs <- genUserInputsTab(input)
+output$UserInputs <- .genUserInputsTab(input)
 ##------------------------------------------------------------------------------------
 ## 3 import raw data - when browse to file function used
 # get data
@@ -36,8 +36,9 @@ output$Standards <- genStandardsTab(output$SummaryTable,
                                      std_d_identifiers)
 ##------------------------------------------------------------------------------------
 ## 5 make calibration table
-cal_identifiers <- c('Acetanilide', 'Acet', 'Acetan', 'Acetanalide', 'analide', 
-                      'atropine', 'atro') 
+cal_identifiers <- c('Acetanilide', 'Acet', 'Acetan',
+                     'Acetanalide', 'analide', 
+                     'atropine', 'atro', 'atrpn') 
 N_weight_content <- 0.1036
 C_weight_content <- 0.7109
 # ^TODO^: more sophisticated method for acetanilide identifiers
@@ -61,7 +62,7 @@ output$Results <- genResultsTab(output$SummaryTable,
 
 ##------------------------------------------------------------------------------------
 ## 7 package all tables into an output
-exportReport(output)
+.exportReport(output)
 
 
 
