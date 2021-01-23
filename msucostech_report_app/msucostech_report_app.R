@@ -219,17 +219,20 @@ server <- function(input, output) {
     )
     ## Create & Export Data Report
     output$export_report <- downloadHandler(
-        filename = function() {.makeReportFilename(input$raw_dat$name)},
+        filename = function() {
+            req(input$raw_dat$name)
+            .makeReportFilename(input$raw_dat$name)
+        },
         content = function(file) {
-            # req(
-            #     input$raw_dat,
-            #     input$N_det_limit_fctr,
-            #     input$C_det_limit_fctr,
-            #     input$N_uncertainty_fctr,
-            #     input$C_uncertainty_fctr, 
-            #     input$N_consensus_fctr,
-            #     input$C_consensus_fctr
-            # )
+            req(
+                input$raw_dat,
+                input$N_det_limit_fctr,
+                input$C_det_limit_fctr,
+                input$N_uncertainty_fctr,
+                input$C_uncertainty_fctr,
+                input$N_consensus_fctr,
+                input$C_consensus_fctr
+            )
             report$UserInputs <- .genUserInputsTab(
                 input$raw_dat$name,
                 raw_dat_folder_path = NA,
