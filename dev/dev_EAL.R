@@ -16,22 +16,22 @@ input$N_uncertainty_fctr <- 0.1
 input$C_uncertainty_fctr <- 0.05 
 input$N_consensus_val <- 0.15 # 0.14 or 0.15
 input$C_consensus_val <- 2 # guess
-input$raw_dat_filename <- "20201007_OFPE_WHM20.xls" # "PF_JG_Costech-20201016_prelim.xlsx" 
+input$raw_dat_filename <- "PF_JG_Costech-20201016_prelim.xlsx" #  "20201007_OFPE_WHM20.xls" # 
 ## ^TODO^:get raw data file name ^ in shiny?
 ##------------------------------------------------------------------------------------
-## 2 make outputs (not needed in shiny? is reactiveValues data) - updates reactively
-outputs <- list()
-outputs$UserInputs <- genUserInputsTab(input)
+## 2 make output (not needed in shiny? is reactiveValues data) - updates reactively
+output <- list()
+output$UserInputs <- genUserInputsTab(input)
 ##------------------------------------------------------------------------------------
 ## 3 import raw data - when browse to file function used
 # get data
-outputs$SummaryTable <- importRawDat(input$raw_dat_filename, 
+output$SummaryTable <- importRawDat(input$raw_dat_filename, 
                                      input$raw_dat_folder_path)
 ##------------------------------------------------------------------------------------
 ## 4 create output$Standards table 
 std_d_identifiers <- c("Std_D", "Standard", "StdD") 
 # ^TODO^: more sophisticated method for identifiying standard Ds
-outputs$Standards <- genStandardsTab(outputs$SummaryTable, 
+output$Standards <- genStandardsTab(output$SummaryTable, 
                                      std_d_identifiers, 
                                      input$N_consensus_val,
                                      input$C_consensus_val)
@@ -39,13 +39,13 @@ outputs$Standards <- genStandardsTab(outputs$SummaryTable,
 ## 5 make calibration table
 acet_identifiers <- c("Acetanilide", "Acet", "Acetan", "Acetanalide", "analide") 
 # ^TODO^: more sophisticated method for acetanilide identifiers
-outputs$CalibrationRange <- genCalRangeTab(outputs$SummaryTable, 
+output$CalibrationRange <- genCalRangeTab(output$SummaryTable, 
                                            acet_identifiers, 
                                            input$det_limit_fctr)
 ##------------------------------------------------------------------------------------
 ## 6 create output$Results 
-outputs$Results <- genResultsTab(outputs$SummaryTable,
-                                 outputs$CalibrationRange,
+output$Results <- genResultsTab(output$SummaryTable,
+                                 output$CalibrationRange,
                                  acet_identifiers,
                                  std_d_identifiers,
                                  input$N_uncertainty_fctr,
@@ -53,7 +53,7 @@ outputs$Results <- genResultsTab(outputs$SummaryTable,
 
 ##------------------------------------------------------------------------------------
 ## 7 package all tables into an output
-exportReport(outputs)
+exportReport(output)
 
 
 
